@@ -46,7 +46,10 @@ const userSchema = new mongoose.Schema({
             type:String,
             required:true
         }
-    }]
+    }],
+    avatar:{
+        type : Buffer
+    }
 },{
     timestamps : true
 });
@@ -54,8 +57,11 @@ const userSchema = new mongoose.Schema({
 userSchema.methods.toJSON = function(){
     const user = this ;
     const userObj = user.toObject();
+   
     delete userObj.password;
     delete userObj.tokens;
+    delete userObj.avatar;
+   
     return userObj;
 }
 
@@ -68,7 +74,7 @@ userSchema.virtual('tasks',{
 //generate token(method)
 userSchema.methods.generateToken = async function(){
     const user = this;
-    const token = await jwt.sign({__id:user._id.toString()},'secret',{expiresIn : '7 Days'});
+    const token = await jwt.sign({__id:user._id.toString()},process.env.JWT_TOKEN,{expiresIn : '7 Days'});
     user.tokens = user.tokens.concat({token});
     await user.save()
     return token;
