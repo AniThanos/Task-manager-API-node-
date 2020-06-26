@@ -106,4 +106,8 @@ router.delete("/tasks/:id",auth,async(req,res)=>{
     }
 })
 
+router.get('/test',(req,res)=>{
+    return res.send({"test":"test"})
+})
+
 module.exports = router;
